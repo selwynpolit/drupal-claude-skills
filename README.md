@@ -77,6 +77,9 @@ Then add the agent workflow guide from [AGENTS.md](AGENTS.md) to your project's 
 | **[drupal-config-reconcile](skills/drupal-config-reconcile/)** | Resolve config drift item-by-item against a deployed env — import vs export vs skip, verify with the import transformer, never write to prod |
 | **[drupal-contrib-mgmt](skills/drupal-contrib-mgmt/)** | Contrib module management — Composer updates, composer-patches v2 (`patches.lock.json` + relock), Drupal 11 compatibility, drupal.org workflow |
 | **[drupal-ddev](skills/drupal-ddev/)** | DDEV local development — setup, commands, database ops, Xdebug, performance (Mutagen), Docker/Mutagen troubleshooting |
+| **[drupal-performance](skills/drupal-performance/)** | Performance methodology + anti-patterns — cold-render query count as the metric, `http.client` render-path hangs, batched projections, plus eight caching/invalidation lessons (`references/caching-lessons.md`) |
+| **[drupal-views-patterns](skills/drupal-views-patterns/)** | Views mechanics + the "View vs custom vs JSON:API" decision — cache plugins, the eager-entity-row trap, pager COUNT cost, lean projections |
+| **[drupal-api-endpoints](skills/drupal-api-endpoints/)** | Custom API endpoints with UUID-based security — route/controller/fetch templates, authenticated cURL testing, the JSON:API filter-access cache-poisoning fix |
 | **[drupal-testing](skills/drupal-testing/)** | TDD with PHPUnit + DTT — bug-fix RED-first, bootstrap-level cost (Unit/Kernel/ExistingSite), the anonymous-403 permission trap, vacuous-pass pin |
 | **[ivangrynenko-cursorrules-drupal](skills/ivangrynenko-cursorrules-drupal/)** | OWASP Top 10 security patterns from [Ivan Grynenko](https://github.com/ivangrynenko/cursorrules) — auth, access control, injection prevention, crypto |
 | **[drupal-simple-oauth](skills/drupal-simple-oauth/)** | OAuth2 with simple_oauth — TokenAuthUser permissions, scope/role matching, field_permissions, CSRF bypass, debugging |
