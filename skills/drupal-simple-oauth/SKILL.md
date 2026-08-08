@@ -5,6 +5,8 @@ description: OAuth2 authentication patterns for Drupal using simple_oauth module
 
 # Drupal Simple OAuth Patterns
 
+> **Web root:** Examples use `docroot/` (the web root Acquia Cloud requires). If your project uses the Composer `drupal/recommended-project` default, the web root is `web/` — substitute it in the paths below (other setups may use `html/`, `public_html/`, or the project root). Check the `docroot:` key in `.ddev/config.yaml` if unsure.
+
 Comprehensive patterns for working with the simple_oauth module for OAuth2 authentication in Drupal. Use when working with API authentication, mobile app tokens, or OAuth2 implementation.
 
 ## Version Information

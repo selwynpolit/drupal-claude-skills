@@ -11,7 +11,7 @@ and verify that fixes work correctly.
 
 ## Test Conventions
 
-- **Location**: `docroot/modules/custom/{module}/tests/src/ExistingSite/`
+- **Location**: `docroot/modules/custom/{module}/tests/src/ExistingSite/` (or `web/modules/custom/…`)
 - **Base class**: `weitzman\DrupalTestTraits\ExistingSiteBase`
 - **Naming**: `{Description}Test.php`
 - **Group**: Use PHP 8 attribute `#[Group('custom')]`

@@ -5,6 +5,8 @@ description: Comprehensive guide for managing Drupal contributed modules via Com
 
 # Drupal Contrib Module Management
 
+> **Web root:** Examples use `docroot/` (the web root Acquia Cloud requires). If your project uses the Composer `drupal/recommended-project` default, the web root is `web/` — substitute it in the paths below (other setups may use `html/`, `public_html/`, or the project root). Check the `docroot:` key in `.ddev/config.yaml` if unsure.
+
 ## Core Update Workflow
 
 ### Standard Module Update
