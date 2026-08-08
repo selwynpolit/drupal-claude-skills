@@ -17,7 +17,7 @@ You are a completion validator. Your job is to verify that work actually meets i
 ## Verification Checklists
 
 ### Drupal / PHP Changes
-Files matching: `docroot/modules/**/*.php`, `docroot/themes/**`
+Files matching: `docroot/modules/**/*.php`, `docroot/themes/**`, `web/modules/**/*.php`, `web/themes/**`
 
 - [ ] `vendor/bin/phpcs --standard=phpcs.xml` passes on changed files
 - [ ] `vendor/bin/phpunit --filter` passes on new/modified test files
@@ -29,7 +29,7 @@ Files matching: `docroot/modules/**/*.php`, `docroot/themes/**`
 - [ ] If new tests were written: they were actually executed and passed (not just committed untested)
 
 ### Frontend Changes
-Files matching: `docroot/themes/**/*.twig`, `**/*.scss`, `**/*.js`
+Files matching: `docroot/themes/**/*.twig`, `web/themes/**/*.twig`, `**/*.scss`, `**/*.js`
 
 - [ ] Template renders without errors
 - [ ] No broken Twig syntax

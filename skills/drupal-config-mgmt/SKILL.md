@@ -5,6 +5,8 @@ description: Drupal configuration management including config import/export, con
 
 # Drupal Configuration Management
 
+> **Web root:** Examples use `docroot/` (the web root Acquia Cloud requires). If your project uses the Composer `drupal/recommended-project` default, the web root is `web/` — substitute it in the paths below (other setups may use `html/`, `public_html/`, or the project root). Check the `docroot:` key in `.ddev/config.yaml` if unsure.
+
 Comprehensive guide for Drupal configuration management including imports, exports, config splits, and environment syncing.
 
 ## Remote CLI — host-neutral
@@ -394,6 +396,83 @@ local       Yes     ../config/local
 dev         No      ../config/dev
 test        No      ../config/test
 ```
+
+---
+
+## Config Split: Practical Setup Walkthrough
+
+_Merged from the d9book "general" chapter, which was too large to keep as a single reference file. Complements the conceptual overview above with concrete day-to-day steps._
+
+### Initial setup
+
+1. Install the module: `ddev composer require drupal/config_split` and enable it.
+2. Specify the config sync directory in `sites/default/settings.php` (or `settings.local.php`):
+   ```php
+   $settings['config_sync_directory'] = '../config/default';
+   ```
+3. With the module installed, define a split for each environment at `/admin/config/development/configuration/config-split` — typically `local`, `dev`, `stage`, `prod`. For each, specify a directory such as `../config/local` where that split's config files will be stored.
+
+**Tip**: Installing the [Chosen](https://www.drupal.org/project/chosen) module makes the config-split selection UI much more usable — it shows selected items in a readable list instead of an endless checkbox column. Run `drush chosenplugin` to download the library if the UI doesn't render correctly after clearing caches.
+
+### Specify the active split in settings.php
+
+```php
+// Note, local is active.
+$config['config_split.config_split.local']['status'] = TRUE;
+$config['config_split.config_split.dev']['status'] = FALSE;
+$config['config_split.config_split.stage']['status'] = FALSE;
+$config['config_split.config_split.prod']['status'] = FALSE;
+```
+
+You can also toggle splits via the UI, but setting them in `settings.php` per-environment is more reliable for deployments.
+
+### Steps for each environment
+
+1. Set the active split in `settings.php`, e.g. `$config['config_split.config_split.local']['status'] = TRUE;`
+2. Import current configuration: `ddev drush cim -y`
+3. Make changes via the Drupal UI.
+4. Export: `ddev drush cex -y` — this writes both the split definition file (e.g. `config/sync/config_split.config_split.local.yml`) and the split-specific configuration you changed.
+5. Test and commit.
+6. Repeat for each environment.
+
+This gets harder when an environment-specific dependency (e.g. a prod-only Solr server) isn't available locally.
+
+### Worked example: enable a module on one environment only
+
+Enable [cron_fail_alert](https://www.drupal.org/project/cron_fail_alert) on `prod` only:
+
+1. Select the `prod` split in `settings.php`.
+2. `ddev drush cr`
+3. `ddev drush cim` to load the `prod` split configuration.
+4. Enable the module in the UI and configure it.
+5. In the `prod` split's **Complete Split** settings, check the `cron_fail_alert` module (and optionally its settings config item).
+6. Save the config split settings.
+7. `ddev drush cex -y` to export.
+
+This creates `config/prod/cron_fail_alert.settings.yml` and lists `cron_fail_alert` under `module:` in `config_split.config_split.prod.yml`. `git status` should show the new file living under `config/prod/`, meaning it only gets enabled when deploying to `prod` and running `drush cim` there.
+
+### Worked example: different settings per environment (Partial Split)
+
+Keep database logging (`dblog`) active everywhere, but with a different row limit per environment (100,000 on `prod`, 10,000 elsewhere):
+
+1. Activate the `local` split, `ddev drush cim -y`.
+2. Enable/configure **Database logging** to keep 10,000 rows.
+3. Under the `local` split's **Partial Split** configuration items, check `dblog.settings`.
+4. `ddev drush cex -y`.
+
+This creates `config/local/config_split.patch.dblog.settings.yml`:
+```yaml
+adding:
+  row_limit: 10000
+removing:
+  row_limit: 1000
+```
+
+Repeat for `prod` (100,000 rows) and any other environment, each producing its own `config_split.patch.dblog.settings.yml` under that split's directory.
+
+### Multiple splits per host
+
+It can be useful to have an extra split for a group of environments that share config not used elsewhere — e.g. an `acquia` split shared by `dev`/`test`/`prod` on Acquia, holding Search API settings that are the same across all Acquia environments but don't apply locally. That way the shared config is set up once (in `config/acquia`) instead of duplicated across `dev`, `test`, and `prod`.
 
 ---
 

@@ -7,6 +7,8 @@ model: inherit
 
 You are a Drupal 10 specialist working on a Drupal site.
 
+Web root: paths below use `docroot/` (the Acquia Cloud convention). If this project's web root is `web/` (Composer `drupal/recommended-project` default) or something else, adjust the paths accordingly.
+
 Key conventions for this project:
 - Custom modules live in `docroot/modules/custom/`
 - Custom theme is `docroot/themes/custom/{theme_name}/`

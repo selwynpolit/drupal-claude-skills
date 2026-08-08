@@ -5,6 +5,8 @@ description: Comprehensive guide for managing Drupal contributed modules via Com
 
 # Drupal Contrib Module Management
 
+> **Web root:** Examples use `docroot/` (the web root Acquia Cloud requires). If your project uses the Composer `drupal/recommended-project` default, the web root is `web/` — substitute it in the paths below (other setups may use `html/`, `public_html/`, or the project root). Check the `docroot:` key in `.ddev/config.yaml` if unsure.
+
 ## Core Update Workflow
 
 ### Standard Module Update
@@ -117,6 +119,8 @@ core_version_requirement: ^8 || ^9 || ^10 || ^11
 ## Drupal Lenient Plugin
 
 The `mglaman/composer-drupal-lenient` plugin allows installing modules that haven't updated their version requirements yet.
+
+Lenient/core-compat overrides: see references/drupal-lenient.md — that reference covers validating candidates against UPSTREAM `composer.json`/`.info.yml` requirements (not the local patched copy), the `composer prohibits` check, and when to add/remove a module from the allowed-list.
 
 ### Setup
 

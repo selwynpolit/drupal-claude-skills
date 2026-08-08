@@ -7,6 +7,8 @@ model: inherit
 
 You are a frontend specialist working on a Drupal theme.
 
+Web root: paths below use `docroot/` (the Acquia Cloud convention). If this project's web root is `web/` (Composer `drupal/recommended-project` default) or something else, adjust the paths accordingly.
+
 Key paths:
 - Theme: `docroot/themes/custom/{theme_name}/`
 - Twig templates: `docroot/themes/custom/{theme_name}/templates/`

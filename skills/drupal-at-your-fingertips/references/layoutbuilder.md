@@ -1,22 +1,16 @@
-# layoutbuilder
+# General
 
 **Source**: [Drupal at Your Fingertips - layoutbuilder](https://drupalatyourfingertips.com/layoutbuilder)
 **Author**: Selwyn Polit
 
 ---
 
-## Full Documentation
+## First topic
 
-**View online**: https://drupalatyourfingertips.com/layoutbuilder
+## Resources
 
-This chapter covers:
-- Detailed explanations with code examples
-- Best practices and common patterns
-- Step-by-step implementation guides
-- Troubleshooting and debugging tips
+- [Layout Builder Overview updated April 2023](https://www.drupal.org/docs/8/core/modules/layout-builder/layout-builder-overview)
 
 ---
 
----
-
-**Last verified**: 2025-10-31
+**Last synced**: 2026-08-08

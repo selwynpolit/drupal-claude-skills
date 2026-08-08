@@ -5,6 +5,8 @@ description: Comprehensive Drupal patterns from "Drupal at Your Fingertips" by S
 
 # Drupal at Your Fingertips
 
+> **Web root:** Examples use `docroot/` (the web root Acquia Cloud requires). If your project uses the Composer `drupal/recommended-project` default, the web root is `web/` — substitute it in the paths below (other setups may use `html/`, `public_html/`, or the project root). Check the `docroot:` key in `.ddev/config.yaml` if unsure.
+
 **Source**: [drupalatyourfingertips.com](https://drupalatyourfingertips.com)
 **Author**: Selwyn Polit
 **License**: Open access documentation
@@ -27,7 +29,7 @@ Activates when working with Drupal development topics covered in the d9book incl
 
 All topics are available as references in the `/references/` directory.
 
-Each reference links to the full chapter on drupalatyourfingertips.com with:
+Each reference contains the full chapter content pulled from drupalatyourfingertips.com:
 - Detailed explanations and code examples
 - Best practices and common patterns
 - Step-by-step guides
@@ -55,8 +57,7 @@ Each reference links to the full chapter on drupalatyourfingertips.com with:
 - @references/dtt.md - Drupal Test Traits
 
 ### Advanced Topics
-- @references/batch.md - Batch API for long operations
-- @references/queue.md - Queue API for background tasks
+- @references/bq.md - Batch API and Queue API for long-running/background operations
 - @references/cron.md - Cron jobs and scheduling
 - @references/ajax.md - AJAX framework
 - @references/javascript.md - JavaScript in Drupal
@@ -67,4 +68,4 @@ See `/references/` directory for complete list of 50+ topics.
 
 ---
 
-**To update**: Run `.claude/scripts/sync-d9book.sh`
+**To update**: Run `.claude/scripts/sync-d9book.sh` (add `--force` to refresh every file, including curated ones). If the sync produces an oversized "grab-bag" reference file (a chapter that's really many unrelated snippets on one page), see `MAINTENANCE.md` for the triage process to split it up instead of shipping it as one huge file.
