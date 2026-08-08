@@ -1,0 +1,35 @@
+Progress for drupal-claude-skills
+---------------------------------
+
+
+8-8-26:
+- fiddling with updating the skills
+- changed to reference docroot and web
+- made some tweaks to the drupal-at-your-fingertips
+- added "Web root" callout to drupal-config-mgmt, drupal-simple-oauth, canvas-contribution,
+  drupal-canvas-sdc, drupal-at-your-fingertips (SKILL.md + references/dtt.md); broadened
+  drupal-canvas-sdc's frontmatter globs to include web/ paths alongside docroot/
+- updated agents (drupal-specialist, frontend-specialist, test-writer, done-gate) to note
+  the web root varies (docroot/ on Acquia vs web/ elsewhere)
+- fixed dead SKILL.md links: references/batch.md and references/queue.md don't exist;
+  both topics are actually covered by references/bq.md — fixed in SKILL.md and in the
+  sync-d9book.sh heredoc that regenerates it (so the fix survives a future sync)
+- rewrote .claude/scripts/sync-d9book.sh to actually fetch real chapter content from
+  selwynpolit/d9book (gh-pages branch) instead of generating empty "view online" stub
+  links; also fixed it to write to skills/ instead of the nonexistent .claude/skills/.
+  Added --force flag and a size-based skip so already-curated files aren't clobbered.
+  Ran it: 39 of 53 reference files went from stub to real content; 14 already-curated
+  files (dtt, services, hooks, etc.) were left alone.
+- found the sync pulled in a few oversized "grab-bag" chapters (single pages with dozens
+  of unrelated snippets) — worst was general.md at 140KB. Manually triaged general.md:
+  merged the useful sections into routes.md, twig.md, security.md (within this skill)
+  and into the drupal-config-mgmt and drupal-search-api skills (Config Split walkthrough,
+  Solr query/document alteration), trimmed the rest into a smaller curated general.md
+  (~79KB), and added general.md to sync-d9book.sh's permanent skip list so it's never
+  auto-overwritten. Other oversized chapters (modules.md, development.md, composer.md,
+  drush.md, upgrade.md, blocks.md, nodes-and-fields.md) were NOT triaged yet — flagged
+  as follow-up if they turn out to actually get used.
+- documented the whole sync + triage process as a runbook in
+  skills/drupal-at-your-fingertips/MAINTENANCE.md so it can be reproduced (by a human or
+  by Claude) if the source book changes significantly
+- everything above is uncommitted on branch selwyn-tweaks, pending review
