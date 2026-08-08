@@ -1,22 +1,94 @@
-# attribution
+# Attribution
 
 **Source**: [Drupal at Your Fingertips - attribution](https://drupalatyourfingertips.com/attribution)
 **Author**: Selwyn Polit
 
 ---
 
-## Full Documentation
+Thanks to these rock stars for their contribution to the project. Please add your name below!
 
-**View online**: https://drupalatyourfingertips.com/attribution
+[Danny Lufkin](https://github.com/dlufkin) - provided inspiration and hopefully some front-end code.
 
-This chapter covers:
-- Detailed explanations with code examples
-- Best practices and common patterns
-- Step-by-step implementation guides
-- Troubleshooting and debugging tips
+[Phillip Norton](https://github.com/philipnorton42)- provided editing and a lot of material from his excellent articles at <https://www.hashbangcode.com>
+
+[Karoly Negyesi](https://github.com/chx) - provided some useful edits and corrections.
+
+[Arek Suchecki](https://github.com/arysom) Fixes to development chapter.
+
+[Nic Laflin](https://github.com/nlighteneddesign) Form section suggestions.
+
+[Ales Rebec](https://github.com/alesrebec) - Styling help and email chapter.
+
+[Sean Adams-Hiett](https://github.com/pyrello) - Help with editing..
+
+[Gary Gao](https://github.com/angrytoast) - Query access checking.
+
+[Maks Oleksyuk](https://github.com/maks-oleksyuk) - Amazing work on moving the book to a new theme (x2) and many other items. Keeping vitepress humming along. General helpful suggestions.
+
+[Bernard Martinez](https://github.com/bmartinez287) - Block chapter fixes.
+
+[Bronius Motekaitis](https://github.com/bronius) - Migration chapter.
+
+[DarkDim](https://github.com/darkdim) - Learning chapter.
+
+[Balint Csuthy](https://github.com/Pasqualle) - Help with editing.
+
+[Bhanu](https://github.com/bhanu951) - Actions chapter and a bunch of other interesting issues.
+
+[John Picozzi](https://github.com/johnpicozzi) - Bringing us more in line with Drupal standards.
+
+[Tony G.](https://github.com/tgroff) - Help with editing.
+
+[James Shields](https://github.com/lostcarpark) - Custom favicon.
+
+[Manas Khatua](https://github.com/manask4) - Help with editing.
+
+[Tyler36](https://github.com/tyler36) - Drush commands.
+
+[Peter Elias](https://github.com/pheski) - Anti-spam modules.
+
+[Salman Haider](https://github.com/isalmanhaider) - Twig fixes & many useful modules.
+
+[Aaron Manire](https://github.com/amanire) - Delete aliases.
+
+[Chad Peppers](https://github.com/chadmandoo) - Drupal utility classes.
+
+[Dimitri Kritsotakis](https://github.com/dimitriskr) - Batch API magic.
+
+[Brian Hogue](https://github.com/syzygy333) - General clarification.
+
+[Ian Moffitt](https://github.com/nessthehero) - Fix typos.
+
+[hazn](https://github.com/haznai) - Clarification.
+
+[Brendan Johnson](https://github.com/Lustratus) - Menu Listbuilder magic.
+
+[Randy Fay](https://github.com/rfay) - DDEV updates and so much more.
+
+[Raynald Mompoint](https://github.com/raynaldmo) - Updates to the learning chapter
+
+[GeorgiadisChristos](https://github.com/GeorgiadisChristos) - Migrate chapter fixes.
+
+[Nathan Kenall](https://github.com/boinkster) - Queries.
+
+[Pramod Ganore](https://github.com/pramodganore) - Localstack.
+
+[Trevor James](https://github.com/trevorjames) - DDEV Development.
+
+[Dan Lemon](https://github.com/dan2k3k4) - AI contributions.
+
+[Steven DuBois](https://github.com/sdubois) - Twig.
+
+[Geert Selderslaghs](https://github.com/gselderslaghs) - hooks.
+
+[Serhii Checheniev](https://github.com/serhii-checheniev) - Fixed up many many typos, spelling and grammatical errors.
+
+[t-franz](https://github.com/t-franz) - Heading fix, code cleanup.
+
+[Ricky](https://github.com/rbertram90) - Custom entities.
+
+[Derek Vawdrey](https://github.com/derekvawdrey) - Help with editing.
 
 ---
 
----
-
-**Last verified**: 2025-10-31
+**Last synced**: 2026-08-08

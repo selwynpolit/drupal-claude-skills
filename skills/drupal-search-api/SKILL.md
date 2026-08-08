@@ -188,6 +188,121 @@ ddev drush config:set search_api.index.{index_name} \
 - Use number_field_boost for simple numeric boosts
 - Don't configure same field in multiple processors
 
+## Solr Query & Document Alteration
+
+_Merged from the d9book "general" chapter, which was too large to keep as a single reference file. These operate at the search_api_solr / Solarium level — lower-level than the boost processors above, useful when you need direct control over the Solr query or the documents sent for indexing._
+
+### Altering the Solr query (PreQueryEvent)
+
+The `hook_search_api_solr_query_alter()` hook is deprecated in favor of a `PreQueryEvent` subscriber. Use this to boost or filter results per-view — e.g. boosting more recent content, or restricting results by a node's own field values.
+
+Register the subscriber in `my_module.services.yml`:
+
+```yaml
+services:
+  my_module.query_alter:
+    class: Drupal\my_module\EventSubscriber\SolrQueryAlterEventSubscriber
+    tags:
+      - { name: event_subscriber }
+```
+
+`src/EventSubscriber/SolrQueryAlterEventSubscriber.php`:
+
+```php
+namespace Drupal\my_module\EventSubscriber;
+
+use Drupal\search_api_solr\Event\PreQueryEvent;
+use Drupal\search_api_solr\Event\SearchApiSolrEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+final class SolrQueryAlterEventSubscriber implements EventSubscriberInterface {
+
+  public static function getSubscribedEvents(): array {
+    return [
+      SearchApiSolrEvents::PRE_QUERY => 'preQuery',
+    ];
+  }
+
+  public function preQuery(PreQueryEvent $event): void {
+    $query = $event->getSearchApiQuery();
+    $solarium_query = $event->getSolariumQuery();
+
+    $view = $query->getOption('search_api_view');
+    if (!$view) {
+      return;
+    }
+
+    // Boost more recent content when a "news" facet is active.
+    if ($view->id() === 'site_search') {
+      $solr_field_names = $query->getIndex()->getServerInstance()->getBackend()->getSolrFieldNames($query->getIndex());
+      $date_field = 'field_boosted_created_date';
+      if (isset($solr_field_names[$date_field])) {
+        $boost_functions = 'recip(ms(NOW,' . $solr_field_names[$date_field] . '),3.16e-15,1,1)';
+        $solarium_query->getEDisMax()->setBoostFunctionsMult($boost_functions);
+        // Keep edismax instead of converting to a Lucene parser expression.
+        $solarium_query->addParam('defType', 'edismax');
+      }
+    }
+
+    // Boost/filter results relative to the current node's own field values
+    // (e.g. a "related content" view).
+    if ($view->id() === 'related_content' && !empty($view->args)) {
+      $node = \Drupal::entityTypeManager()->getStorage('node')->load($view->args[0]);
+      $solarium_query->addParam('defType', 'edismax');
+      $helper = $solarium_query->getHelper();
+      $bq_params = [];
+      if ($node->hasField('field_category') && !empty($node->field_category->value)) {
+        $bq_params[] = 'sm_field_category:' . $helper->escapePhrase($node->field_category->value) . '^10';
+      }
+      if ($bq_params) {
+        $solarium_query->addParam('bq', $bq_params);
+      }
+    }
+  }
+
+}
+```
+
+The [Solarium](https://packagist.org/packages/solarium/solarium) helper (`$solarium_query->getHelper()`) provides `escapeTerm()`, `escapePhrase()`, `escapeXMLCharacterData()`, `filterControlCharacters()`, and `escapeLocalParamValue()` for safely building query fragments.
+
+### Enhancing relevance by altering documents before indexing (`hook_search_api_solr_documents_alter`)
+
+Add a computed field to Solr documents before they're indexed, so it's available for boosting at query time — this hook only adds the field; boosting itself happens in the query alter above.
+
+```php
+/**
+ * Implements hook_search_api_solr_documents_alter().
+ *
+ * Alter Solr documents before they are sent to Solr for indexing.
+ */
+function my_module_search_api_solr_documents_alter(array &$documents, \Drupal\search_api\IndexInterface $index, array $items) {
+  if ($index->id() !== 'my_index') {
+    return;
+  }
+
+  $field_name = 'field_boosted_created_date';
+  if (is_null($index->getField($field_name))) {
+    $index_field = new \Drupal\search_api\Item\Field($index, $field_name);
+    $index_field->setType('date');
+    $index_field->setPropertyPath('created');
+    $index_field->setDatasourceId('entity:node');
+    $index_field->setLabel('Boosted Created Date');
+    $index->addField($index_field);
+    $index->save();
+  }
+
+  foreach ($documents as $document) {
+    $solr_field_name = 'ds_' . $field_name;
+    if ($document->getFields()['ss_type'] === 'news_article') {
+      $document->setField($solr_field_name, $document->getFields()['ds_created']);
+    }
+    else {
+      $document->setField($solr_field_name, NULL);
+    }
+  }
+}
+```
+
 ## Configuration Management
 
 ### Direct Config Updates with PHP

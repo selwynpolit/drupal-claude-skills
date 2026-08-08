@@ -1,22 +1,23 @@
-# decoupled
+# Decoupled Drupal
 
 **Source**: [Drupal at Your Fingertips - decoupled](https://drupalatyourfingertips.com/decoupled)
 **Author**: Selwyn Polit
 
 ---
 
-## Full Documentation
+## REST API
 
-**View online**: https://drupalatyourfingertips.com/decoupled
+## GraphQL
 
-This chapter covers:
-- Detailed explanations with code examples
-- Best practices and common patterns
-- Step-by-step implementation guides
-- Troubleshooting and debugging tips
+### GraphQL mutations
+A GraphQL mutation in Drupal 10 is a way to change or manipulate data on a server using the GraphQL query language. Mutations are used to add, update, or delete data, while queries are used to read data.
+
+## JSONAPI
+
+## Resources
+
+- [GraphQL module](https://www.drupal.org/project/graphql)
 
 ---
 
----
-
-**Last verified**: 2025-10-31
+**Last synced**: 2026-08-08

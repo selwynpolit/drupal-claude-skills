@@ -1,22 +1,38 @@
-# mysteries
+# Mysteries
 
 **Source**: [Drupal at Your Fingertips - mysteries](https://drupalatyourfingertips.com/mysteries)
 **Author**: Selwyn Polit
 
 ---
 
-## Full Documentation
+## Overview
 
-**View online**: https://drupalatyourfingertips.com/mysteries
+I often hit snags that seem to defy logic and Google.  I'll put them here for now and maybe someone can weigh in on the solutions.
 
-This chapter covers:
-- Detailed explanations with code examples
-- Best practices and common patterns
-- Step-by-step implementation guides
-- Troubleshooting and debugging tips
+## settings.local.php causes WSOD
+
+Updated: 8-30-23
+
+In this case, I loaded a site onto my new m2 mac from git, fired up ddev, imported a current production database, confirmed the site was running and logged into it.  Then I added the stock `sites/default/settings.local/php` as well as `sites/development.services.yml`. Anything I do caused this kind of error.  No amount of cache clearing, config importing etc. will make it work/
+
+```
+The website encountered an unexpected error. Please try again later.
+RuntimeException: Failed to start the session because headers have already been sent by "/var/www/html/docroot/sites/default/settings.local.php" at line 1. in Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage->start() (line 152 of /var/www/html/vendor/symfony/http-foundation/Session/Storage/NativeSessionStorage.php).
+Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage->start() (Line: 162)
+Drupal\Core\Session\SessionManager->startNow() (Line: 110)
+Drupal\Core\Session\SessionManager->start() (Line: 57)
+Symfony\Component\HttpFoundation\Session\Session->start() (Line: 54)
+Drupal\Core\StackMiddleware\Session->handle(Object, 1, 1) (Line: 48)
+Drupal\Core\StackMiddleware\KernelPreHandle->handle(Object, 1, 1) (Line: 106)
+Drupal\page_cache\StackMiddleware\PageCache->pass(Object, 1, 1) (Line: 85)
+Drupal\page_cache\StackMiddleware\PageCache->handle(Object, 1, 1) (Line: 50)
+Drupal\ban\BanMiddleware->handle(Object, 1, 1) (Line: 48)
+Drupal\Core\StackMiddleware\ReverseProxyMiddleware->handle(Object, 1, 1) (Line: 51)
+Drupal\Core\StackMiddleware\NegotiationMiddleware->handle(Object, 1, 1) (Line: 23)
+Stack\StackedHttpKernel->handle(Object, 1, 1) (Line: 718)
+Drupal\Core\DrupalKernel->handle(Object) (Line: 19)
+```
 
 ---
 
----
-
-**Last verified**: 2025-10-31
+**Last synced**: 2026-08-08

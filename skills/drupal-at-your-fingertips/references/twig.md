@@ -402,6 +402,310 @@ regions:
 
 ---
 
+## More Preprocess Snippets (from the General chapter)
+
+_Merged from the d9book "general" chapter, which was too large to keep as a single reference file._
+
+### Add a variable to any page on the site
+
+In the theme's `.theme` file, add a `hook_preprocess_page` function:
+
+```php
+function mytheme_preprocess_page(&$variables) {
+  $variables['footer_address1'] = [
+    '#type' => 'markup',
+    '#markup' => '123 Disk Drive, Sector 439',
+  ];
+  $variables['footer_address2'] = [
+    '#type' => 'markup',
+    '#markup' => 'Austin, Texas 78759',
+  ];
+}
+```
+
+Then in the template file, e.g. `templates/partials/footer.html.twig`:
+
+```twig
+<div class="cell xlarge-3 medium-4">
+  <address>
+    {{ footer_address1 }}<br />
+    {{ footer_address2 }}<br />
+  </address>
+</div>
+```
+
+### Add a variable to be rendered in a node
+
+Add vars in `hook_preprocess_node` in the theme's `.theme` file — here `stock_field` and `my_custom_field` are added and rendered by a normal node Twig file:
+
+```php
+function mytheme_preprocess_node(&$variables) {
+  $variables['content']['stock_field'] = [
+    '#type' => 'markup',
+    '#markup' => 'stock field here',
+  ];
+
+  $variables['content']['my_custom_field'] = [
+    '#type' => 'markup',
+    '#markup' => 'Hello - custom field here',
+  ];
+}
+```
+
+If you've tweaked your node Twig template, reference it like this:
+
+```twig
+<div class="stock-field-class">
+  {{ content['stock_field'] }}
+</div>
+```
+
+You can also add a variable directly and reference it in the template:
+
+```php
+$variables['abc'] = 'hello';
+```
+
+```twig
+{{ abc }}
+{# or, for debugging: #}
+{{ kint(abc) }}
+```
+
+### Add a bunch of variables to be rendered in a node
+
+Grab the node from `$variables`, then cycle through multi-value reference fields to build an array Twig can render easily:
+
+```php
+function mytheme_preprocess_node(&$variables) {
+  $view_mode = $variables['view_mode'];
+  $allowed_view_modes = ['full']; // Restrict for performance.
+  $node = $variables['node'];
+  if (($node->getType() == 'news_story') && ($view_mode == 'full')) {
+    $aofs = _mytheme_multival_ref_data($node->field_ref_aof, 'aof', 'target_id');
+    $topics = _mytheme_multival_ref_data($node->field_ref_topic, 'topic', 'target_id', 'taxonomy');
+    $related_news_items = array_merge($topics, $aofs);
+    $variables['related_news_items'] = $related_news_items;
+  }
+}
+
+/**
+ * Returns array of data for multivalue node reference fields.
+ */
+function _mytheme_multival_ref_data($ref_field, $param_name, $value_type, $field_ref_type = 'node') {
+  $values = [];
+  foreach ($ref_field as $ref) {
+    if ($field_ref_type == 'taxonomy') {
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($ref->$value_type);
+      $title = $term->getName();
+    }
+    else {
+      $title = $value_type == 'value' ? $ref->$value_type : $ref->entity->title->value;
+    }
+    $values[] = [
+      'title' => $title,
+      'id' => str_replace(' ', '+', $ref->$value_type),
+      'param_name' => $param_name,
+    ];
+  }
+  return $values;
+}
+```
+
+### Grabbing entity reference fields in hook_preprocess_node for injection into the twig template
+
+Pull in referenced fields directly:
+
+```php
+$node->field_sf_contract_ref->entity->field_how_to_order->value;
+```
+
+Where `field_sf_contract_ref` is the reference field pointing to an entity with a `field_how_to_order` field. Assign it into `$variables` and use it in the template as `{{ how_to_order }}`:
+
+```php
+function mytheme_preprocess_node(&$variables) {
+  $node = $variables['node'];
+  $type = $node->bundle();
+  if ($type === 'contract') {
+    if ($variables['view_mode'] === 'full') {
+      $how_to_order_lookup = $node->field_sf_contract_ref->entity->field_how_to_order_lookup->value;
+      $variables['how_to_order_lookup'] = $how_to_order_lookup;
+      $contract_type = $node->get('field_contract_type')->value;
+      if ($how_to_order_lookup === 'Custom Text') {
+        $variables['how_to_order'] = $contract_type === 'DIRT'
+          ? $node->field_sf_contract_ref->entity->field_how_to_order->value
+          : $node->field_sf_contract_ref->entity->field_how_to_order_custom->value;
+      }
+    }
+  }
+}
+```
+
+### Render a list created in the template_preprocess_node()
+
+Build a list in `hook_preprocess_node`:
+
+```php
+function mytheme_preprocess_node(&$variables) {
+  $variables['burgers'] = [
+    ['name' => 'Cheeseburger'],
+    ['name' => 'Mushroom Swissburger'],
+    ['name' => 'Jalapeno burger'],
+  ];
+}
+```
+
+Render it in the Twig template, e.g. `node--article--full.html.twig`:
+
+```twig
+<ol>
+  {% for burger in burgers %}
+    <li> {{ burger['name'] }} </li>
+  {% endfor %}
+</ol>
+```
+
+### Indexing paragraphs so you can theme the first one
+
+Add an index to paragraph items referenced as `{{ paragraph.index }}` in the Twig template:
+
+```php
+/**
+ * Implements hook_preprocess_field().
+ *
+ * Provides an index for these fields referenced as {{ paragraph.index }}
+ * in twig template.
+ */
+function mytheme_preprocess_field(&$variables) {
+  if ($variables['field_name'] == 'field_video_accordions') {
+    foreach ($variables['items'] as $idx => $item) {
+      $variables['items'][$idx]['content']['#paragraph']->index = $idx;
+    }
+  }
+}
+```
+
+`field_video_accordions` is the name of the field holding the paragraphs to count. In the paragraph's Twig template:
+
+```twig
+{% if paragraph.index == 0 %}
+  <li class="accordion-item is-active" data-accordion-item="">
+{% else %}
+  <li class="accordion-item" data-accordion-item="">
+{% endif %}
+```
+
+### Add meta tags using template_preprocess_html
+
+Modify `<head>` in `hook_preprocess_html`. Build a fake array of meta tags and attach them via `$variables['page']['#attached']['html_head']`:
+
+```php
+/**
+ * Implements hook_preprocess_html().
+ */
+function mytheme_preprocess_html(&$variables) {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface && $node->getType() == 'contract') {
+    $brand_meta_tag = [
+      [
+        '#tag' => 'meta',
+        '#attributes' => [
+          'name' => 'brand',
+          'content' => 'Dell',
+        ],
+      ],
+      'Dell',
+    ];
+    $variables['page']['#attached']['html_head'][] = $brand_meta_tag;
+  }
+}
+```
+
+The second array element (`'Dell'`) is a description key, not rendered directly — if you don't need it, use:
+
+```php
+$page['#attached']['html_head'][] = [$description, 'description'];
+```
+
+For multiple tags, loop and append each:
+
+```php
+$brand_meta_tags = [];
+$brand_meta_tags[] = [['#tag' => 'meta', '#attributes' => ['name' => 'brand', 'content' => 'Dell']], 'Dell'];
+$brand_meta_tags[] = [['#tag' => 'meta', '#attributes' => ['name' => 'brand', 'content' => 'Apple']], 'Apple'];
+
+foreach ($brand_meta_tags as $brand_meta_tag) {
+  $variables['page']['#attached']['html_head'][] = $brand_meta_tag;
+}
+```
+
+Building tags from a query:
+
+```php
+$brand_meta_tags = [];
+$contract_id = $node->field_contract_id->value;
+if ($contract_id) {
+  $query = \Drupal::entityQuery('node')
+    ->condition('type', 'sf_store_brands')
+    ->condition('status', 1)
+    ->condition('field_contract_id', $contract_id);
+  $nids = $query->execute();
+  foreach ($nids as $nid) {
+    $store_brand_node = Node::load($nid);
+    $brand = $store_brand_node->field_brand->value;
+    if ($brand) {
+      $brand_meta_tags[] = [
+        ['#tag' => 'meta', '#attributes' => ['name' => 'brand', 'content' => $brand]],
+        $brand,
+      ];
+    }
+  }
+  foreach ($brand_meta_tags as $brand_meta_tag) {
+    $variables['page']['#attached']['html_head'][] = $brand_meta_tag;
+  }
+}
+```
+
+### Add StringTranslationTrait to a class to use $this->t()
+
+To use `$this->t()` in a class, add `use StringTranslationTrait`:
+
+```php
+namespace Drupal\my_module;
+
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
+final class MenuTableBuilder implements MenuTableBuilderInterface {
+
+  use StringTranslationTrait;
+
+  public function buildTable(int $page): array {
+    $rows = [];
+    foreach ($pagedMenus as $menu_name => $menu) {
+      $edit_url = Url::fromRoute('entity.menu.edit_form', ['menu' => $menu_name]);
+      $rows[] = [
+        'title' => $menu->label(),
+        'operations' => [
+          'data' => [
+            '#type' => 'operations',
+            '#links' => [
+              'edit' => [
+                'title' => $this->t('Edit'),
+                'url' => $edit_url,
+              ],
+            ],
+          ],
+        ],
+      ];
+    }
+    return $rows;
+  }
+
+}
+```
+
+---
+
 ## Key Guidelines
 
 ✅ **Use template suggestions** - Most specific first
