@@ -32,4 +32,11 @@ Progress for drupal-claude-skills
 - documented the whole sync + triage process as a runbook in
   skills/drupal-at-your-fingertips/MAINTENANCE.md so it can be reproduced (by a human or
   by Claude) if the source book changes significantly
-- everything above is uncommitted on branch selwyn-tweaks, pending review
+- committed the above as 3 commits on branch selwyn-tweaks, pushed to my fork
+  (selwynpolit/drupal-claude-skills), and merged the PR into main on the fork
+- install.sh hardcoded the upstream repo (grasmash/drupal-claude-skills), so running it
+  wouldn't have picked up any of my fork's changes. Added SKILLS_REPO (and SKILLS_BRANCH)
+  env var overrides so it can install from a fork:
+    SKILLS_REPO=selwynpolit/drupal-claude-skills bash <(curl -s https://raw.githubusercontent.com/selwynpolit/drupal-claude-skills/main/install.sh)
+  Tested against my fork's main branch — works. Documented in README under "Option 2".
+  Committed and pushed.
