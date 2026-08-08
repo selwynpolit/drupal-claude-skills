@@ -36,6 +36,12 @@ Or from a cloned copy:
 ./install.sh /path/to/your/drupal/project
 ```
 
+Installing from a fork instead of upstream? Set `SKILLS_REPO` (and optionally `SKILLS_BRANCH`) — the URL you `curl` from only picks which copy of `install.sh` runs, so pass `SKILLS_REPO` explicitly to also point the clone step at your fork:
+
+```bash
+SKILLS_REPO=yourname/drupal-claude-skills bash <(curl -s https://raw.githubusercontent.com/yourname/drupal-claude-skills/main/install.sh) /path/to/your/drupal/project
+```
+
 ### Option 3: Skills CLI (skills only, no agents)
 
 ```bash

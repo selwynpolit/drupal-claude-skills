@@ -2,6 +2,11 @@
 # Install Drupal Claude Skills into a Drupal project
 # Usage: curl -s https://raw.githubusercontent.com/grasmash/drupal-claude-skills/main/install.sh | bash
 #   or:  bash install.sh /path/to/your/project
+#
+# To install from a fork instead of upstream, set SKILLS_REPO (and
+# optionally SKILLS_BRANCH):
+#   SKILLS_REPO=yourname/drupal-claude-skills bash install.sh /path/to/your/project
+#   SKILLS_REPO=yourname/drupal-claude-skills SKILLS_BRANCH=my-branch bash install.sh
 
 set -e
 
@@ -12,11 +17,13 @@ if [ ! -d "$TARGET" ]; then
   exit 1
 fi
 
-REPO_URL="https://github.com/grasmash/drupal-claude-skills.git"
+REPO_SLUG="${SKILLS_REPO:-grasmash/drupal-claude-skills}"
+BRANCH="${SKILLS_BRANCH:-main}"
+REPO_URL="https://github.com/${REPO_SLUG}.git"
 TEMP_DIR=$(mktemp -d)
 
-echo "Cloning drupal-claude-skills..."
-git clone --depth 1 --quiet "$REPO_URL" "$TEMP_DIR"
+echo "Cloning ${REPO_SLUG} (${BRANCH})..."
+git clone --depth 1 --quiet --branch "$BRANCH" "$REPO_URL" "$TEMP_DIR"
 
 # Install skills
 echo "Installing skills..."
